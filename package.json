@@ -1,1 +1,13 @@
-{}
+{
+  "name": "deferred-regl",
+  "description": "defer operations to a regl instance",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [
+    "regl",
+    "webgl",
+    "deferred"
+  ],
+  "author": "substack",
+  "license": "BSD"
+}
