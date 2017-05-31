@@ -1,38 +1,11 @@
 module.exports = function () {
   var regl = null
   var queue = []
-
   var def = dfn('()')
-  def.frame = function (cb) { queue.push(function (r) { r.frame(cb) }) }
-  def.poll = function () { queue.push(function (r) { r.poll() }) }
-  def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
-  def.prop = function (key) {
-    return function (context, props) { return props[key] }
-  }
-  def.props = def.prop
-  def.context = function (key) {
-    return function (context, props) { return context[key] }
-  }
-  def['this'] = function (key) {
-    return function (context, props) { return this[key] }
-  }
-  def.buffer = dfn('buffer')
-  def.texture = dfn('texture')
-  def.elements = dfn('elements')
-  def.framebuffer = dfn('framebuffer')
-  def.framebufferCube = dfn('framebufferCube')
-  def.renderbuffer = dfn('renderbuffer')
-  def.cube = dfn('cube')
-  def.read = function () {}
-  def.hasExtension = function () {}
-  def.limits = function () {}
-  def.stats = function () {}
-  def.now = function () { return 0 }
-  def.destroy = function () { queue.push(function (r) { r.destroy() }) }
-  def.on = function (name, f) { queue.push(function (r) { r.on(name,f) }) }
-
+  unset()
   def.setRegl = function (r) {
     regl = r
+    if (!r) return unset()
     for (var i = 0; i < queue.length; i++) {
       queue[i](regl)
     }
@@ -57,6 +30,35 @@ module.exports = function () {
   }
   return def
 
+  function unset () {
+    def.frame = function (cb) { queue.push(function (r) { r.frame(cb) }) }
+    def.poll = function () { queue.push(function (r) { r.poll() }) }
+    def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
+    def.prop = function (key) {
+      return function (context, props) { return props[key] }
+    }
+    def.props = def.prop
+    def.context = function (key) {
+      return function (context, props) { return context[key] }
+    }
+    def['this'] = function (key) {
+      return function (context, props) { return this[key] }
+    }
+    def.buffer = dfn('buffer')
+    def.texture = dfn('texture')
+    def.elements = dfn('elements')
+    def.framebuffer = dfn('framebuffer')
+    def.framebufferCube = dfn('framebufferCube')
+    def.renderbuffer = dfn('renderbuffer')
+    def.cube = dfn('cube')
+    def.read = function () {}
+    def.hasExtension = function () {}
+    def.limits = function () {}
+    def.stats = function () {}
+    def.now = function () { return 0 }
+    def.destroy = function () { queue.push(function (r) { r.destroy() }) }
+    def.on = function (name, f) { queue.push(function (r) { r.on(name,f) }) }
+  }
   function dfn (key) {
     return function (opts) {
       if (key === '()' && regl) return regl(opts)
