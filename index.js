@@ -31,6 +31,7 @@ module.exports = function () {
   return def
 
   function unset () {
+    if (!queue) queue = []
     def.frame = function (cb) { queue.push(function (r) { r.frame(cb) }) }
     def.poll = function () { queue.push(function (r) { r.poll() }) }
     def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
