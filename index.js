@@ -11,6 +11,7 @@ module.exports = function () {
     }
     queue = null
     def.frame = r.frame
+    def.draw = r.draw
     def.poll = r.poll
     def.clear = r.clear
     def.buffer = r.buffer
@@ -33,6 +34,7 @@ module.exports = function () {
   function unset () {
     if (!queue) queue = []
     def.frame = function (cb) { queue.push(function (r) { r.frame(cb) }) }
+    def.draw = function (cb) { queue.push(function (r) { r.draw(cb) }) }
     def.poll = function () { queue.push(function (r) { r.poll() }) }
     def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
     def.prop = function (key) {
