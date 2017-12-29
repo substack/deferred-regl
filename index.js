@@ -50,7 +50,7 @@ module.exports = function () {
     def.buffer = dfn('buffer')
     def.texture = dfn('texture')
     def.elements = dfn('elements')
-    def.framebuffer = dfn('framebuffer')
+    def.framebuffer = dfnx('framebuffer',['resize','use'])
     def.framebufferCube = dfn('framebufferCube')
     def.renderbuffer = dfn('renderbuffer')
     def.cube = dfn('cube')
@@ -78,6 +78,33 @@ module.exports = function () {
         if (f) f.apply(null,args)
         else queue.push(function (r) { f.apply(null,args) })
       }
+    }
+  }
+  function dfnx (key, methods) {
+    return function (opts) {
+      if (key === '()' && regl) return regl(opts)
+      else if (regl) return regl[key](opts)
+
+      var f = null
+      if (key === '()') {
+        queue.push(function (r) { f = r(opts) })
+      } else {
+        queue.push(function (r) { f = r[key](opts) })
+      }
+      var r = function () {
+        var args = arguments
+        if (f) f.apply(null,args)
+        else queue.push(function (r) { f.apply(null,args) })
+      }
+      for (var i = 0; i < methods.length; i++) {
+        var m = methods[i]
+        r[m] = function () {
+          var args = arguments
+          if (f) return f[m].apply(f,args)
+          else queue.push(function () { f[m].apply(f,args) })
+        }
+      }
+      return r
     }
   }
 }
