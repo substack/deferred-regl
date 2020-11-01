@@ -38,7 +38,19 @@ module.exports = function () {
     def.poll = function () { queue.push(function (r) { r.poll() }) }
     def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
     def.prop = function (key) {
-      return function (context, props) { return props[key] }
+      return function (context, props) {
+        if(props[key]){
+          return props[key]
+        }else{
+          // missing key could be speical case unrolled uniform prop
+          // https://github.com/regl-project/regl/issues/258
+          // https://github.com/regl-project/regl/issues/373
+          var matches = key.match(/(?<prop>.+)\[(?<index>.+)\]/i)
+          if(matches){
+            return props[matches.groups.prop][matches.groups.index]
+          }
+        }
+      }
     }
     def.props = def.prop
     def.context = function (key) {
