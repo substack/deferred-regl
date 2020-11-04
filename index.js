@@ -39,14 +39,14 @@ module.exports = function () {
     def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
     def.prop = function (key) {
       return function (context, props) {
-        if(props[key]){
+        if (props[key]) {
           return props[key]
-        }else{
+        } else {
           // missing key could be speical case unrolled uniform prop
           // https://github.com/regl-project/regl/issues/258
           // https://github.com/regl-project/regl/issues/373
           var matches = key.match(/(?<prop>.+)\[(?<index>.+)\]/i)
-          if(matches){
+          if (matches) {
             return props[matches.groups.prop][matches.groups.index]
           }
         }
