@@ -88,9 +88,9 @@ module.exports = function () {
       return function () {
         var args = arguments
         if (f) {
-          if(key === '()') f.apply(null,args)
-          else return f;
-        }else{
+          if (key === '()') f.apply(null,args)
+          else return f
+        } else {
           queue.push(function (r) { f.apply(null,args) })
         }
       }
@@ -109,11 +109,12 @@ module.exports = function () {
       }
       var r = function () {
         var args = arguments
-        if (f){
-          if(key === '()') f.apply(null,args)
-          else return f;
+        if (f) {
+          if (key === '()') f.apply(null,args)
+          else return f
+        } else {
+          queue.push(function (r) { f.apply(null,args) })
         }
-        else queue.push(function (r) { f.apply(null,args) })
       }
       for (var i = 0; i < methods.length; i++) {
         var m = methods[i]
