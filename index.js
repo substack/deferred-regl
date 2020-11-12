@@ -87,8 +87,12 @@ module.exports = function () {
       }
       return function () {
         var args = arguments
-        if (f) f.apply(null,args)
-        else queue.push(function (r) { f.apply(null,args) })
+        if (f) {
+          if(key === '()') f.apply(null,args)
+          else return f;
+        }else{
+          queue.push(function (r) { f.apply(null,args) })
+        }
       }
     }
   }
@@ -105,7 +109,10 @@ module.exports = function () {
       }
       var r = function () {
         var args = arguments
-        if (f) f.apply(null,args)
+        if (f){
+          if(key === '()') f.apply(null,args)
+          else return f;
+        }
         else queue.push(function (r) { f.apply(null,args) })
       }
       for (var i = 0; i < methods.length; i++) {
