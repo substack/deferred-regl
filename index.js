@@ -39,7 +39,7 @@ module.exports = function () {
     def.clear = function (opts) { queue.push(function (r) { r.clear(opts) }) }
     def.prop = function (key) {
       return function (context, props) {
-        if (props[key]) {
+        if (!falsy(props[key])) {
           return props[key]
         } else {
           // missing key could be speical case unrolled uniform prop
@@ -87,7 +87,7 @@ module.exports = function () {
       }
       return function () {
         var args = arguments
-        if (f) {
+        if (!falsy(f)) {
           if (key === '()') f.apply(null,args)
           else return f
         } else {
@@ -109,7 +109,7 @@ module.exports = function () {
       }
       var r = function () {
         var args = arguments
-        if (f) {
+        if (!falsy(f)) {
           if (key === '()') f.apply(null,args)
           else return f
         } else {
@@ -120,11 +120,15 @@ module.exports = function () {
         var m = methods[i]
         r[m] = function () {
           var args = arguments
-          if (f) return f[m].apply(f,args)
+          if (!falsy(f)) return f[m].apply(f,args)
           else queue.push(function () { f[m].apply(f,args) })
         }
       }
       return r
     }
   }
+}
+
+function falsy (x) {
+  return x === null || x === undefined
 }
