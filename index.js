@@ -59,7 +59,7 @@ module.exports = function () {
     def['this'] = function (key) {
       return function (context, props) { return this[key] }
     }
-    def.buffer = dfn('buffer')
+    def.buffer = dfnx('buffer',['subdata'])
     def.texture = dfn('texture')
     def.elements = dfn('elements')
     def.framebuffer = dfnx('framebuffer',['resize','use'])
